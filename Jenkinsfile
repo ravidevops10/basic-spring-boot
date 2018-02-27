@@ -9,7 +9,7 @@ pipeline {
     string(name: 'DOCKER_COMPOSE_FILENAME', defaultValue: 'docker-compose.yml', description: '')
     string(name: 'DOCKER_STACK_NAME', defaultValue: 'spring_boot_stack', description: '')
     string(name: 'SONAR_TOKEN', defaultValue: '57fa1ba76f2c6ebae895284c269b7f4f1c0d2935', description: '')
-    string(name: 'SONAR_URL', defaultValue: 'http://192.168.99.100:9000', description: '')
+    string(name: 'SONAR_URL', defaultValue: 'http://sonar:9000', description: '')
     string(name: 'MAVEN_IMAGE', defaultValue: 'maven:3.5.2-jdk-8-alpine', description: '')
     booleanParam(name: 'SKIP_MAVEN_TESTS', defaultValue: true, description: '')
     booleanParam(name: 'PUSH_DOCKER_IMAGES', defaultValue: true, description: '')
@@ -24,18 +24,18 @@ pipeline {
 		  }
       }
       steps{
-      	sh "mvn sonar:sonar -Dsonar.host.url=$SONAR_URL -Dsonar.login=${params.SONAR_TOKEN}"
+	      sh "mvn sonar:sonar -Dsonar.host.url=${params.SONAR_URL} -Dsonar.login=${params.SONAR_TOKEN}"
 		script{
 			 def pom = readMavenPom(file: 'pom.xml')
 			 def groupId = pom.groupId;
 			 def artifactId = pom.artifactId;
-			 def qualityGateJson = sh(returnStdout: true, script: "curl $SONAR_URL/api/project_branches/list?project=${groupId}:${artifactId}").trim()
+			 def qualityGateJson = sh(returnStdout: true, script: "curl ${params.SONAR_URL}/api/project_branches/list?project=${groupId}:${artifactId}").trim()
 			 def qualityGate = readJSON(text: qualityGateJson)
 			
 			 for(branch in qualityGate.branches){
 				 if(branch.name == env.BRANCH_NAME){
 					 if(branch.status.qualityGateStatus == "ERROR"){
-					 	throw "Quality Gate Test FAILED. go to $SONAR_URL/dashboard?id=${groupId}:${artifactId}"
+					 	throw new Exception("Quality Gate Test FAILED. go to ${params.SONAR_URL}/dashboard?id=${groupId}:${artifactId}")
 					 }
 					 break;
 				 }
