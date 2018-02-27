@@ -18,5 +18,20 @@ public class DemoApplication {
 	public String hello() throws Exception {
 		return "Hello World"; 
 	}
+	
+	@RequestMapping(value = "/hello3")
+	public String hello3() throws Exception {
+		return "Hello World"; 
+	}
+	
+	@RequestMapping(value = "/hello2")
+	public String hello2() throws Exception {
+		return "Hello World"; 
+	}
+	
+	@RequestMapping(value = "/hello1")
+	public String hello1() throws Exception {
+		return "Hello World"; 
+	}
 
 }
