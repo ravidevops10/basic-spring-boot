@@ -25,6 +25,22 @@ pipeline {
       }
       steps{
       	sh "mvn sonar:sonar -Dsonar.host.url=$SONAR_URL -Dsonar.login=${params.SONAR_TOKEN}"
+		script{
+			 def pom = readMavenPom(file: 'pom.xml')
+			 def groupId = pom.groupId;
+			 def artifactId = pom.artifactId;
+			 def qualityGateJson = sh(returnStdout: true, script: "curl http://$SONAR_URL/api/project_branches/list?project=${groupId}:${artifactId}").trim()
+			 def qualityGate = readJSON(text: qualityGateJson)
+			
+			 for(branch in qualityGate.branches){
+				 if(branch.name == env.BRANCH_NAME){
+					 if(branch.status.qualityGateStatus == "ERROR"){
+					 	throw "Quality Gate Test FAILED. go to http://$SONAR_URL/dashboard?id=${groupId}:${artifactId}"
+					 }
+					 break;
+				 }
+			 }
+		}
       }
     }
     stage('maven build'){
@@ -36,6 +52,7 @@ pipeline {
       }
       steps{
 	 	 sh "mvn clean package -f pom.xml -Dmaven.test.skip=${params.SKIP_MAVEN_TESTS}"
+		  
       }
     }
     stage('docker build'){
