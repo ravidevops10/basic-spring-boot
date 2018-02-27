@@ -35,7 +35,7 @@ pipeline {
 			 for(branch in qualityGate.branches){
 				 if(branch.name == env.BRANCH_NAME){
 					 if(branch.status.qualityGateStatus == "ERROR"){
-					 	throw new Exception("Quality Gate Test FAILED. go to ${params.SONAR_URL}/dashboard?id=${groupId}:${artifactId}")
+					 	error("Quality Gate Test FAILED. go to ${params.SONAR_URL}/dashboard?id=${groupId}:${artifactId}")
 					 }
 					 break;
 				 }
