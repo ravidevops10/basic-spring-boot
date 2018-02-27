@@ -1,0 +1,7 @@
+version: '3.4'
+
+services:
+  springboot:
+    image: jamessmith52963/basic-spring-boot:build-latest
+    ports:
+      - 18080:8080
