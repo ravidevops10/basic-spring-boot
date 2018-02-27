@@ -9,7 +9,8 @@ pipeline {
     string(name: 'DOCKER_COMPOSE_FILENAME', defaultValue: 'docker-compose.yml', description: '')
     string(name: 'DOCKER_STACK_NAME', defaultValue: 'spring_boot_stack', description: '')
     string(name: 'SONAR_TOKEN', defaultValue: '57fa1ba76f2c6ebae895284c269b7f4f1c0d2935', description: '')
-	string(name: 'MAVEN_IMAGE', defaultValue: 'maven:3.5.2-jdk-8-alpine', description: '')
+    string(name: 'SONAR_URL', defaultValue: 'http://192.168.99.100:9000', description: '')
+    string(name: 'MAVEN_IMAGE', defaultValue: 'maven:3.5.2-jdk-8-alpine', description: '')
     booleanParam(name: 'SKIP_MAVEN_TESTS', defaultValue: true, description: '')
     booleanParam(name: 'PUSH_DOCKER_IMAGES', defaultValue: true, description: '')
     booleanParam(name: 'DOCKER_STACK_RM', defaultValue: false, description: 'Remove previous stack.  This is required if you have updated any secrets or configs as these cannot be updated. ')
@@ -23,7 +24,7 @@ pipeline {
 		  }
       }
       steps{
-      	sh "mvn sonar:sonar -Dsonar.host.url=http://sonar:9000 -Dsonar.login=${params.SONAR_TOKEN}"
+      	sh "mvn sonar:sonar -Dsonar.host.url=$SONAR_URL -Dsonar.login=${params.SONAR_TOKEN}"
       }
     }
     stage('maven build'){
