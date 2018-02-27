@@ -67,7 +67,7 @@ pipeline {
       steps{
         sh "docker push $BUILD_IMAGE_REPO_TAG"
         sh "docker push ${params.IMAGE_REPO_NAME}:$COMMIT_TAG"
-        sh "docker push ${params.IMAGE_REPO_NAME}:${readJSON(file: 'package.json').version}"
+        sh "docker push ${params.IMAGE_REPO_NAME}:${readMavenPom(file: 'pom.xml').version}"
         sh "docker push ${params.IMAGE_REPO_NAME}:${params.LATEST_BUILD_TAG}"
         sh "docker push ${params.IMAGE_REPO_NAME}:$BRANCH_NAME-latest"
       }
