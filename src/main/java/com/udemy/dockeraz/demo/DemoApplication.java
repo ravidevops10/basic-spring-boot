@@ -25,6 +25,11 @@ public class DemoApplication {
 	}
 	
 	@RequestMapping(value = "/hello2")
+	public String hello4() {
+		return "Hello".substring(888, 1000); 
+	}
+	
+	@RequestMapping(value = "/hello2")
 	public String hello2() throws Exception {
 		return "Hello World"; 
 	}
