@@ -15,8 +15,24 @@ public class DemoApplication {
 	}
 	
 	@RequestMapping(value = "/hello")
+	public String hello() {
+		return "Hello World"; 
+	}
+	
+	@RequestMapping(value = "/hello")
 	public String hello() throws Exception {
 		return "Hello World"; 
 	}
-
+	
+	@RequestMapping(value = "/true-false")
+	public String hello() {
+		if(this.alwaysFalse()){
+			return "TRUE";	
+		}
+		return "FALSE"; 
+	}
+	
+	private boolean alwaysFalse(){
+		return false;	
+	}
 }
